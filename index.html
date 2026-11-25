@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LA SIRENA GROUP — Enterprise CRM &amp; Leads System 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js'"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js'"></script>
+  <style>
+    :root {
+      --bg-canvas: #eef2f6;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f8fafc;
+      --bg-sidebar: #0b1220;
+      --bg-sidebar-hover: #162033;
+      --bg-sidebar-active: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --accent-blue: #2563eb;
+      --accent-sky: #0ea5e9;
+      --accent-indigo: #6366f1;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-amber: #d97706;
+      --kpi-total: #0284c7;
+      --kpi-total-soft: rgba(2, 132, 199, 0.12);
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --shadow-lg: 0 10px 28px rgba(15, 23, 42, 0.10);
+      --radius: 14px;
+      --sidebar-w: 268px;
+    }
+
+    [data-theme="dark"] {
+      --bg-canvas: #070d19;
+      --bg-card: #111a2e;
+      --bg-card-subtle: #16213a;
+      --bg-sidebar: #050a14;
+      --bg-sidebar-hover: #111c33;
+      --border: #1e2d4a;
+      --border-strong: #2c3e61;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --kpi-total: #38bdf8;
+      --kpi-total-soft: rgba(56, 189, 248, 0.16);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+      --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.40);
+      --shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.55);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', 'Cairo', system-ui, -apple-system, sans-serif;
+      background: var(--bg-canvas);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ===== FIXED DARK SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-sidebar);
+      color: #e2e8f0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 16px;
+      z-index: 50;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 8px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 18px;
+    }
+    .brand-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px; color: #fff;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+      flex-shrink: 0;
+    }
+    .brand-title { font-size: 14.5px; font-weight: 800; letter-spacing: 0.4px; color: #fff; }
+    .brand-sub { font-size: 11px; color: #38bdf8; font-weight: 600; margin-top: 2px; }
+    .ar-tag { font-family: 'Cairo', sans-serif; font-weight: 700; opacity: 0.85; font-size: 0.92em; }
+    [data-lang="en"] .ar-tag, [data-lang="en"] .ar-sep { display: none; }
+    .nav-text { display: flex; flex-direction: column; line-height: 1.25; }
+    .nav-ar { font-family: 'Cairo', sans-serif; font-size: 11px; opacity: 0.72; font-weight: 600; }
+    .nav-item.active .nav-ar { opacity: 0.92; color: #dbeafe; }
+
+    .nav-section-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #64748b;
+      text-transform: uppercase;
+      padding: 8px 10px 6px;
+    }
+    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-bottom: 18px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #cbd5e1;
+      transition: all 0.16s ease;
+      user-select: none;
+    }
+    .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
+    .nav-item.active {
+      background: var(--bg-sidebar-active);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+    .nav-badge {
+      margin-left: auto;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    /* Sidebar Filters */
+    .sidebar-filters {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin-bottom: 16px;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+    .filter-group select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #162033;
+      color: #f8fafc;
+      font-size: 12.5px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .filter-group select:focus { border-color: #38bdf8; }
+    .btn-reset {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(37, 99, 235, 0.18);
+      color: #7dd3fc;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-reset:hover { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+    .sidebar-status {
+      margin-top: auto;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+      font-size: 11.5px;
+      color: #a7f3d0;
+    }
+    .status-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: #10b981;
+      margin-right: 6px;
+      box-shadow: 0 0 8px #10b981;
+    }
+    .sidebar-total {
+      font-size: 22px; font-weight: 800; color: #fff;
+      margin-top: 4px; font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== MAIN AREA ===== */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .page-title { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+    .page-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .active-pills { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(37, 99, 235, 0.10);
+      color: var(--accent-blue);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      padding: 5px 10px; border-radius: 99px;
+      font-size: 12px; font-weight: 700;
+    }
+    .pill button {
+      background: none; border: none; color: inherit;
+      cursor: pointer; font-weight: 800; font-size: 13px; line-height: 1;
+    }
+    .icon-btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card-subtle);
+      color: var(--text-primary);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    .content { padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 22px; }
+
+    /* ===== KPI GRID ===== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .kpi-grid.cols-5 {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .kpi-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: var(--kpi-accent, #2563eb);
+    }
+    .kpi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .kpi-label {
+      font-size: 11.5px; font-weight: 700; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--text-muted);
+    }
+    .kpi-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      background: var(--kpi-soft, rgba(37,99,235,0.1));
+    }
+    .kpi-value {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--kpi-accent, var(--text-primary));
+    }
+    .kpi-value.text-sm { font-size: 20px; letter-spacing: -0.3px; line-height: 1.25; }
+    .kpi-foot {
+      margin-top: 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: var(--text-secondary); font-weight: 600;
+    }
+    .kpi-badge {
+      padding: 3px 8px; border-radius: 6px;
+      font-size: 11.5px; font-weight: 700;
+      background: var(--kpi-soft, rgba(37,99,235,0.1));
+      color: var(--kpi-accent, #2563eb);
+    }
+
+    /* ===== TOP PERFORMERS SPOTLIGHT (5 CARDS: SALES, TEAM LEADER, PROJECT, PLATFORM, CAMPAIGN) ===== */
+    .spotlight-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .spot-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--spot-accent, #6366f1);
+      border-radius: 12px;
+      padding: 16px 16px;
+      box-shadow: var(--shadow-md);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .spot-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .spotlight-grid.cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .spot-lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .spot-name { font-size: 15px; font-weight: 800; color: var(--text-primary); margin-top: 3px; }
+    .spot-cnt {
+      font-size: 22px; font-weight: 800; color: var(--spot-accent, #6366f1);
+      background: var(--bg-card-subtle);
+      padding: 6px 12px; border-radius: 10px;
+      border: 1px solid var(--border);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    /* ===== CHARTS GRID ===== */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .chart-title { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+    .chart-hint { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .chart-right { display: flex; align-items: center; gap: 8px; }
+    .seg-toggle {
+      display: inline-flex;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .seg-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(37,99,235,0.3);
+    }
+    .chart-wrap { position: relative; height: 320px; width: 100%; }
+
+    /* ===== LEADERBOARD TABLE ===== */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .table-toolbar {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+    }
+    .table-title { font-size: 16px; font-weight: 800; }
+    .table-controls { display: flex; align-items: center; gap: 10px; }
+    .search-input {
+      padding: 8px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card-subtle);
+      color: var(--text-primary);
+      font-size: 13px;
+      width: 240px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent-blue); }
+
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th {
+      background: var(--bg-card-subtle);
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 13px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    thead th.num, tbody td.num, tfoot td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    thead th:hover { color: var(--accent-blue); }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    tbody tr:hover { background: rgba(37, 99, 235, 0.045); }
+    tbody td { padding: 12px 16px; font-weight: 600; color: var(--text-primary); }
+    tbody td.leads-col { font-size: 14.5px; font-weight: 800; }
+    tbody td.active-col { color: var(--accent-green); font-weight: 700; }
+    tbody td.inact-col { color: var(--accent-red); font-weight: 700; }
+    tbody td.contr-col { color: var(--accent-blue); font-size: 14.5px; font-weight: 800; }
+    tfoot td {
+      background: rgba(37, 99, 235, 0.08);
+      padding: 14px 16px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-primary);
+      border-top: 2px solid var(--border-strong);
+    }
+
+    .bar-track {
+      width: 140px; height: 10px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #0ea5e9);
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+    .conv-pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .conv-high { background: rgba(5,150,105,0.14); color: #059669; }
+    .conv-mid  { background: rgba(217,119,6,0.14); color: #d97706; }
+    .conv-low  { background: rgba(100,116,139,0.14); color: var(--text-muted); }
+
+    /* Loading overlay (for Google Apps Script live fetch) */
+    .loader-overlay {
+      position: fixed; inset: 0;
+      background: #0b1220;
+      color: #fff;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      z-index: 999;
+      transition: opacity 0.3s;
+    }
+    .loader-overlay.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 4px solid rgba(56,189,248,0.25);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    [dir="rtl"] .sidebar { left: auto; right: 0; border-right: none; border-left: 1px solid rgba(255,255,255,0.06); }
+    [dir="rtl"] .main { margin-left: 0; margin-right: var(--sidebar-w); }
+    [dir="rtl"] .spot-card { border-left: 1px solid var(--border); border-right: 4px solid var(--spot-accent, #6366f1); }
+    [dir="rtl"] thead th, [dir="rtl"] tbody td { text-align: right; }
+    [dir="rtl"] thead th.num, [dir="rtl"] tbody td.num, [dir="rtl"] tfoot td.num { text-align: left; }
+
+    /* ===== MOBILE DRAWER & RESPONSIVE POLISH ===== */
+    .mobile-menu-btn {
+      display: none;
+      align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border-strong);
+      background: var(--accent-blue);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .sidebar-close {
+      display: none;
+      margin-left: auto;
+      background: rgba(255,255,255,0.1);
+      border: none; color: #fff;
+      width: 32px; height: 32px; border-radius: 8px;
+      font-size: 16px; font-weight: 800; cursor: pointer;
+    }
+    [dir="rtl"] .sidebar-close { margin-left: 0; margin-right: auto; }
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(2, 6, 23, 0.58);
+      backdrop-filter: blur(2px);
+      z-index: 45;
+    }
+    .sidebar-backdrop.open { display: block; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    @media (max-width: 1360px) {
+      .spotlight-grid, .kpi-grid.cols-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 1200px) {
+      .kpi-grid, .kpi-grid.cols-5, .spotlight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .mobile-menu-btn { display: inline-flex; }
+      .sidebar-close { display: inline-flex; align-items: center; justify-content: center; }
+      .sidebar {
+        position: fixed; top: 0; bottom: 0; left: 0;
+        width: 285px; max-width: 85vw;
+        transform: translateX(-105%);
+        transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 60;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      }
+      [dir="rtl"] .sidebar { left: auto; right: 0; transform: translateX(105%); }
+      .sidebar.open, [dir="rtl"] .sidebar.open { transform: translateX(0); }
+      .main, [dir="rtl"] .main { margin-left: 0; margin-right: 0; }
+      .topbar { padding: 12px 14px; flex-direction: column; align-items: stretch; gap: 10px; }
+      .topbar-actions { justify-content: flex-start; gap: 6px; }
+      .icon-btn { padding: 7px 10px; font-size: 11.5px; }
+      .page-title { font-size: 16px; line-height: 1.3; }
+      .page-sub { font-size: 11.5px; }
+      .content { padding: 14px 14px 32px; gap: 16px; }
+    }
+    @media (max-width: 580px) {
+      .kpi-grid, .kpi-grid.cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .kpi-card { padding: 14px 13px; border-radius: 12px; }
+      .kpi-label { font-size: 10px; }
+      .kpi-icon { width: 28px; height: 28px; font-size: 13px; }
+      .kpi-value { font-size: 24px; }
+      .kpi-value.text-sm { font-size: 15px; }
+      .kpi-foot { flex-direction: column; align-items: flex-start; gap: 5px; font-size: 10.5px; }
+      .spotlight-grid { grid-template-columns: 1fr; gap: 10px; }
+      .spot-card { padding: 12px 14px; }
+      .spot-cnt { font-size: 18px; padding: 5px 10px; }
+      .chart-card { padding: 14px 14px; }
+      .chart-title { font-size: 13.5px; }
+      .chart-wrap { height: 270px; }
+      .table-toolbar { padding: 14px; flex-direction: column; align-items: stretch; }
+      .table-controls { flex-direction: column; align-items: stretch; }
+      .search-input { width: 100%; }
+      table { font-size: 12.5px; }
+      thead th, tbody td, tfoot td { padding: 10px 11px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loader" class="loader-overlay">
+    <div class="spinner"></div>
+    <div style="font-size:17px;font-weight:800;">LA SIRENA GROUP — CRM SYSTEM 2026</div>
+    <div style="font-size:13px;color:#94a3b8;">Loading live dataset from Google Sheets...</div>
+  </div>
+
+  <!-- MOBILE DRAWER BACKDROP -->
+  <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+  <!-- FIXED SAAS SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">LS</div>
+      <div>
+        <div class="brand-title">LA SIRENA GROUP</div>
+        <div class="brand-sub">CRM 2026<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">لاسيرينا جروب</span></div>
+      </div>
+      <button class="sidebar-close" id="btnCloseSidebar" aria-label="Close menu">✕</button>
+    </div>
+
+    <div class="nav-section-lbl">Modules<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">الأقسام</span></div>
+    <ul class="nav-list" id="navList">
+      <li class="nav-item active" data-page="home">🏠 <span class="nav-text"><span>Home Overview</span></span></li>
+      <li class="nav-item" data-page="platform">📱 <span class="nav-text"><span>Digital Platforms</span></span></li>
+      <li class="nav-item" data-page="manager">👤 <span class="nav-text"><span>Sales Managers</span></span></li>
+      <li class="nav-item" data-page="campaigns">📢 <span class="nav-text"><span>Ad Campaigns</span></span></li>
+      <li class="nav-item" data-page="projects">🏢 <span class="nav-text"><span>Projects Portfolio</span></span></li>
+    </ul>
+
+    <div class="nav-section-lbl">Filters<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">الفلاتر</span></div>
+    <div class="sidebar-filters">
+      <div class="filter-group">
+        <label for="fQuarter">📅 Quarter<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">الربع السنوي</span></label>
+        <select id="fQuarter"><option value="All">— All Quarters —</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="fMonth">🗓️ Month<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">الشهر</span></label>
+        <select id="fMonth"><option value="All">— All Months —</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="fManager">👤 Sales Manager<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">مدير المبيعات</span></label>
+        <select id="fManager"><option value="All">— All Managers —</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="fProject">🏢 Project<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">المشروع العقاري</span></label>
+        <select id="fProject"><option value="All">— All Projects —</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="fPlatform">📱 Platform<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">المنصة</span></label>
+        <select id="fPlatform"><option value="All">— All Platforms —</option></select>
+      </div>
+      <button class="btn-reset" id="btnReset">↺ Reset Filters<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">إعادة ضبط</span></button>
+    </div>
+
+    <div class="sidebar-status">
+      <div><span class="status-dot"></span>Live CRM<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">بيانات مباشرة</span></div>
+      <div class="sidebar-total" id="sidebarTotal">0</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:2px;">Filtered Leads<span class="ar-sep"> &nbsp;|&nbsp; </span><span class="ar-tag">إجمالي العملاء</span></div>
+    </div>
+  </aside>
+
+  <!-- MAIN SYSTEM WORKSPACE -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="btnMobileMenu">☰ Menu</button>
+        <div style="min-width:0;">
+          <div class="page-title" id="pageTitle">Executive Overview</div>
+          <div class="page-sub" id="pageSub">LA SIRENA GROUP — Real-Time CRM &amp; Leads Management System 2026</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="active-pills" id="activePills"></div>
+        <button class="icon-btn" id="btnLang" title="Switch Language: Power BI (EN|AR) / English / العربية">🌐 EN | عربي</button>
+        <button class="icon-btn" id="btnSync" title="Connect or refresh live Google Sheet API">🔄 Live Sync</button>
+        <button class="icon-btn" id="btnExport">⬇ Export CSV</button>
+        <button class="icon-btn" id="btnTheme">🌙 Dark Mode</button>
+      </div>
+    </header>
+
+    <section class="content">
+      <!-- 4 GIANT KPI CARDS -->
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <!-- TOP PERFORMERS SPOTLIGHT (HOME) -->
+      <div class="spotlight-grid" id="spotlightGrid"></div>
+
+      <!-- 2x2 INTERACTIVE CHARTS -->
+      <div class="charts-grid" id="chartsGrid"></div>
+
+      <!-- SEARCHABLE SORTABLE LEADERBOARD -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="table-title" id="tableTitle">Performance Leaderboard</div>
+          <div class="table-controls">
+            <div id="tableTimeToggle"></div>
+            <input type="text" id="tableSearch" class="search-input" placeholder="🔍 Search in table..." />
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+            <tfoot id="tableFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Standalone local data file (ignored gracefully when deployed on Google Apps Script) -->
+  <script src="data.js" onerror="void(0)"></script>
+  <script>
+    window.addEventListener("error", function(ev) {
+      var ld = document.getElementById("loader");
+      if (ld && !ld.classList.contains("hidden")) {
+        ld.innerHTML = "<div style='color:#f87171;font-weight:700;padding:20px;text-align:center;max-width:420px;'>Startup Error:<br>" + (ev.message || "Unknown script error") + "</div>";
+      }
+    });
+    if (typeof Chart !== "undefined" && typeof ChartDataLabels !== "undefined") {
+      Chart.register(ChartDataLabels);
+    }
+
+    const ACTIVE_STATUSES   = new Set(["Start Action", "On Going", "Interested", "After visit"]);
+    const INACTIVE_STATUSES = new Set(["Lost Lead", "Close Archive", "Cancelation"]);
+    const CONTRACT_STATUSES = new Set(["Close Deal", "Deal Referral"]);
+
+    let langMode = "en"; // Default: English immediately! User can still switch via 🌐 button (EN / EN|AR / العربية)
+
+    const I18N = {
+      pbi: {
+        btn: "🌐 EN | عربي",
+        nav: { home: ["Home Overview","الرئيسية"], platform: ["Digital Platforms","المنصات"], manager: ["Sales Managers","المديرين"], campaigns: ["Ad Campaigns","الحملات"], projects: ["Projects Portfolio","المشاريع"] },
+        pages: {
+          home:      { title: "LA SIRENA GROUP — ENTERPRISE CRM 2026  |  مجموعة لاسيرينا جروب", sub: "Global KPIs, Monthly Trends & Top Performers" },
+          platform:  { title: "DIGITAL PLATFORMS & CHANNELS  |  تحليلات المنصات الرقمية", sub: "Platform & Sub-Platform Acquisition & Contracts" },
+          manager:   { title: "SALES MANAGERS & LEADERS  |  تحليلات المديرين والمبيعات", sub: "Manager Pipeline & Sales Rep Leaderboard" },
+          campaigns: { title: "MARKETING & AD CAMPAIGNS  |  تحليلات الحملات الإعلانية", sub: "Campaign Leads Volume & Contract Performance" },
+          projects:  { title: "REAL ESTATE PROJECTS PORTFOLIO  |  تحليلات المشاريع العقارية", sub: "Projects Demand, Share & Contract Conversion" }
+        },
+        kpi: {
+          contracts: "Total Contracts  |  إجمالي التعاقدات",
+          active:    "Active Leads  |  العملاء النشطين",
+          inactive:  "Inactive Leads  |  غير النشطين",
+          conv:      "Conversion Rate  |  نسبة التحويل",
+          topPlat:   "Top Contract Platform",
+          topSales:  "Top Contract Sales",
+          topCamp:   "Top Contract Campaign",
+          topPrj:    "Top Contract Project"
+        },
+        spot: ["👤 Manager Module | أعلى مبيعات","📱 Platform Module | أعلى منصة","🏢 Projects Module | أعلى مشروع","📢 Campaigns Module | أعلى حملة"],
+        charts: {
+          moLeads: "📈 Monthly Total Leads Trend",
+          moDeals: "📑 Monthly Closed Deals Trend",
+          status:  "📊 Leads Pipeline by Status",
+          topPrjC: "🏢 Top 8 Projects by Contracts",
+          platC:   "🏆 Contracts by Platform",
+          subPlat: "📱 Top 8 Sub-Platforms by Leads",
+          platSh:  "🎯 Leads Share by Platform",
+          mgrC:    "🏆 Top 10 Managers by Contracts",
+          salesC:  "🏅 Top 10 Sales Reps by Contracts",
+          mgrL:    "👥 Top 10 Managers by Total Leads",
+          campL:   "📢 Top 10 Campaigns by Total Leads",
+          campC:   "🏆 Top 10 Campaigns by Contracts",
+          prjL:    "🏢 Top 10 Projects by Total Leads",
+          prjC:    "🏆 Top 10 Projects by Contracts",
+          prjSh:   "🎯 Leads Share by Project"
+        },
+        tables: {
+          home: "📅 Monthly Performance Summary (2026)",
+          platform: "📱 Platform Leads Summary",
+          manager: "👤 Sales Managers Leaderboard",
+          campaigns: "📢 Campaign Leads Summary",
+          projects: "🏢 Projects Leads Summary"
+        },
+        cols: ["Name","Month","Total Leads","Active Leads","Inactive Leads","Contracts","Conv %","Volume Share","TOTAL"]
+      },
+      en: {
+        btn: "🌐 English",
+        nav: { home: ["Home Overview",""], platform: ["Digital Platforms",""], manager: ["Sales Managers",""], campaigns: ["Ad Campaigns",""], projects: ["Projects Portfolio",""] },
+        pages: {
+          home:      { title: "LA SIRENA GROUP — ENTERPRISE CRM SYSTEM 2026", sub: "Executive Overview — Global KPIs, Monthly Trends & Top Performers" },
+          platform:  { title: "DIGITAL PLATFORMS & CHANNELS PORTAL", sub: "Platform & Sub-Platform Acquisition & Contracts" },
+          manager:   { title: "SALES MANAGERS & LEADERS PORTAL", sub: "Manager Pipeline & Sales Rep Leaderboard" },
+          campaigns: { title: "MARKETING & AD CAMPAIGNS PORTAL", sub: "Campaign Leads Volume & Contract Performance" },
+          projects:  { title: "REAL ESTATE PROJECTS PORTFOLIO", sub: "Projects Demand, Share & Contract Conversion" }
+        },
+        kpi: {
+          contracts: "Total Contracts", active: "Active Leads", inactive: "Inactive Leads", conv: "Conversion Rate",
+          topPlat: "Top Contract Platform", topSales: "Top Contract Sales", topCamp: "Top Contract Campaign", topPrj: "Top Contract Project"
+        },
+        spot: ["👤 Top Sales Rep","📱 Top Platform","🏢 Top Project","📢 Top Campaign"],
+        charts: {
+          moLeads: "📈 Monthly Total Leads Trend", moDeals: "📑 Monthly Closed Deals Trend", status: "📊 Leads Pipeline by Status", topPrjC: "🏢 Top 8 Projects by Contracts",
+          platC: "🏆 Contracts by Platform", subPlat: "📱 Top 8 Sub-Platforms by Leads", platSh: "🎯 Leads Share by Platform",
+          mgrC: "🏆 Top 10 Managers by Contracts", salesC: "🏅 Top 10 Sales Reps by Contracts", mgrL: "👥 Top 10 Managers by Total Leads",
+          campL: "📢 Top 10 Campaigns by Total Leads", campC: "🏆 Top 10 Campaigns by Contracts",
+          prjL: "🏢 Top 10 Projects by Total Leads", prjC: "🏆 Top 10 Projects by Contracts", prjSh: "🎯 Leads Share by Project"
+        },
+        tables: { home: "📅 Monthly Performance Summary (2026)", platform: "📱 Platform Leads Summary", manager: "👤 Sales Managers Leaderboard", campaigns: "📢 Campaign Leads Summary", projects: "🏢 Projects Leads Summary" },
+        cols: ["Name","Month","Total Leads","Active Leads","Inactive Leads","Contracts","Conv %","Volume Share","TOTAL"]
+      },
+      ar: {
+        btn: "🌐 العربية",
+        nav: { home: ["الرئيسية",""], platform: ["المنصات الرقمية",""], manager: ["المديرين والمبيعات",""], campaigns: ["الحملات الإعلانية",""], projects: ["المشاريع العقارية",""] },
+        pages: {
+          home:      { title: "مجموعة لاسيرينا جروب — نظام إدارة العملاء 2026", sub: "المؤشرات الرئيسية والترند الشهري والأعلى أداءً" },
+          platform:  { title: "تحليلات المنصات الرقمية والقنوات", sub: "أداء المنصات الرئيسية والفرعية ونسب التعاقد" },
+          manager:   { title: "تحليلات مديري ومندوبي المبيعات", sub: "ترتيب المديرين والمندوبين حسب التعاقدات والعملاء" },
+          campaigns: { title: "تحليلات الحملات الإعلانية والتسويق", sub: "حجم العملاء والتعاقدات حسب الحملة الإعلانية" },
+          projects:  { title: "تحليلات المشاريع العقارية", sub: "توزيع العملاء ونسب التحويل لكل مشروع" }
+        },
+        kpi: {
+          contracts: "إجمالي التعاقدات", active: "العملاء النشطين", inactive: "العملاء غير النشطين", conv: "نسبة التحويل",
+          topPlat: "أعلى منصة تعاقدًا", topSales: "أعلى مندوب مبيعات", topCamp: "أعلى حملة تعاقدًا", topPrj: "أعلى مشروع تعاقدًا"
+        },
+        spot: ["👤 أعلى مبيعات","📱 أعلى منصة","🏢 أعلى مشروع","📢 أعلى حملة"],
+        charts: {
+          moLeads: "📈 إجمالي العملاء شهريًا", moDeals: "📑 إجمالي التعاقدات شهريًا", status: "📊 توزيع العملاء حسب الحالة", topPrjC: "🏢 أعلى 8 مشاريع بالتعاقدات",
+          platC: "🏆 التعاقدات حسب المنصة", subPlat: "📱 أعلى 8 منصات فرعية", platSh: "🎯 نسبة العملاء حسب المنصة",
+          mgrC: "🏆 أعلى 10 مديرين بالتعاقدات", salesC: "🏅 أعلى 10 مندوبي مبيعات", mgrL: "👥 أعلى 10 مديرين بحجم العملاء",
+          campL: "📢 أعلى 10 حملات بحجم العملاء", campC: "🏆 أعلى 10 حملات بالتعاقدات",
+          prjL: "🏢 أعلى 10 مشاريع بحجم العملاء", prjC: "🏆 أعلى 10 مشاريع بالتعاقدات", prjSh: "🎯 توزيع العملاء على المشاريع"
+        },
+        tables: { home: "📅 الملخص الشهري للأداء (2026)", platform: "📱 ملخص المنصات", manager: "👤 ترتيب مديري المبيعات", campaigns: "📢 ملخص الحملات الإعلانية", projects: "🏢 ملخص المشاريع العقارية" },
+        cols: ["الاسم","الشهر","إجمالي العملاء","النشطين","غير النشطين","التعاقدات","نسبة التحويل","النسبة","الإجمالي"]
+      }
+    };
+
+    function applyLanguageUI() {
+      const T = I18N[langMode];
+      document.documentElement.setAttribute("data-lang", langMode);
+      document.documentElement.setAttribute("dir", langMode === "ar" ? "rtl" : "ltr");
+      document.getElementById("btnLang").textContent = T.btn;
+      document.querySelectorAll("#navList .nav-item").forEach(li => {
+        const p = li.dataset.page;
+        const [mainTxt, subTxt] = T.nav[p];
+        const icon = li.textContent.trim().split(" ")[0];
+        li.innerHTML = `${icon} <span class="nav-text"><span>${mainTxt}</span>${subTxt ? `<span class="nav-ar">${subTxt}</span>` : ""}</span>`;
+      });
+    }
+
+    let RAW = null;
+    let currentPage = "home";
+    let charts = {};
+    let currentTableRows = [];
+    let sortState = { key: "name", dir: "asc" };
+    let filters = { q: "All", mo: "All", mgr: "All", prj: "All", plat: "All" };
+    let timeGranularity = "month"; // "month" or "quarter"
+
+    const MONTH_NAMES_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const MONTH_NAMES_AR = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+    // Normalize any month value ("2026-06" OR "Mon Jun 01 2026 00:00:00 GMT+0300 (...)") -> canonical "2026-06"
+    function normalizeMonthKey(raw) {
+      if (!raw) return "";
+      const s = String(raw).trim();
+      if (/^\d{4}-\d{2}$/.test(s)) return s;
+      // Match English month abbrev + year (e.g. "Mon Jun 01 2026 ...")
+      const mMatch = s.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b.*?(\d{4})/i);
+      if (mMatch) {
+        const idx = MONTH_NAMES_EN.findIndex(x => x.toLowerCase() === mMatch[1].toLowerCase()) + 1;
+        return mMatch[2] + "-" + (idx < 10 ? "0" + idx : idx);
+      }
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        const m = d.getMonth() + 1;
+        return d.getFullYear() + "-" + (m < 10 ? "0" + m : m);
+      }
+      return s;
+    }
+
+    function formatMonthLabel(key) {
+      const m = String(key || "").match(/^(\d{4})-(\d{2})$/);
+      if (!m) return key;
+      const idx = parseInt(m[2], 10) - 1;
+      if (idx < 0 || idx > 11) return key;
+      return (langMode === "ar" ? MONTH_NAMES_AR[idx] : MONTH_NAMES_EN[idx]) + " " + m[1];
+    }
+
+    function formatQuarterLabel(qKey) {
+      if (!qKey) return "";
+      return langMode === "ar" ? (qKey + " — 2026") : (qKey + " 2026");
+    }
+
+    window.setTimeGranularity = mode => {
+      if (timeGranularity === mode) return;
+      timeGranularity = mode;
+      render();
+    };
+
+    const fmtNum = n => Number(n || 0).toLocaleString("en-US");
+    const fmtPct = (a, b) => b ? ((a / b) * 100).toFixed(2) + "%" : "0.00%";
+
+    function getStatusGroup(st) {
+      if (CONTRACT_STATUSES.has(st)) return "contract";
+      if (ACTIVE_STATUSES.has(st))   return "active";
+      if (INACTIVE_STATUSES.has(st)) return "inactive";
+      return "other";
+    }
+
+    function populateSelect(id, values, allLabel, labelFormatter) {
+      const el = document.getElementById(id);
+      const unique = [...new Set(values.filter(v => v && v.trim() !== ""))].sort((a, b) => a.localeCompare(b));
+      el.innerHTML = `<option value="All">${allLabel}</option>` +
+        unique.map(v => `<option value="${v.replace(/"/g, '&quot;')}">${labelFormatter ? labelFormatter(v) : v}</option>`).join("");
+    }
+
+    function normalizeText(raw, type) {
+      if (!raw) return "";
+      let v = String(raw).trim().replace(/\s+/g, " ");
+      if (!v) return "";
+      if (type === "prj" || type === "mgr" || type === "sales" || type === "plat" || type === "sub") {
+        v = v.replace(/\b([a-zA-Z])([a-zA-Z]*)/g, (_, first, rest) => {
+          const word = first + rest;
+          if (word.toUpperCase() === "CRM") return "CRM";
+          return first.toUpperCase() + rest.toLowerCase();
+        });
+      }
+      if (type === "prj") {
+        const low = v.toLowerCase();
+        if (low === "ras seder project" || low === "ras sedr project") v = "Ras Sedr Projects";
+        if (low === "sokhna project") v = "Sokhna Projects";
+      }
+      return v;
+    }
+
+    function initApp(data) {
+      RAW = data;
+      // Normalize months & unify case/spelling duplicates across Projects, Managers, Sales, Platforms & Sub-Platforms
+      RAW.dicts.mo    = RAW.dicts.mo.map(normalizeMonthKey);
+      RAW.dicts.prj   = RAW.dicts.prj.map(v => normalizeText(v, "prj"));
+      RAW.dicts.mgr   = RAW.dicts.mgr.map(v => normalizeText(v, "mgr"));
+      RAW.dicts.sales = RAW.dicts.sales.map(v => normalizeText(v, "sales"));
+      RAW.dicts.plat  = RAW.dicts.plat.map(v => normalizeText(v, "plat"));
+      RAW.dicts.sub   = RAW.dicts.sub.map(v => normalizeText(v, "sub"));
+      // Pre-classify status index -> group for ultra-fast filtering
+      RAW.stGroup = RAW.dicts.st.map(getStatusGroup);
+
+      populateSelect("fQuarter",  RAW.dicts.q,    "— All Quarters —");
+      populateSelect("fMonth",    RAW.dicts.mo,   "— All Months —", formatMonthLabel);
+      populateSelect("fManager",  RAW.dicts.mgr,  "— All Managers —");
+      populateSelect("fProject",  RAW.dicts.prj,  "— All Projects —");
+      populateSelect("fPlatform", RAW.dicts.plat, "— All Platforms —");
+      syncFilterUI();
+
+      document.getElementById("fQuarter").onchange  = e => { filters.q    = e.target.value; render(); };
+      document.getElementById("fMonth").onchange    = e => { filters.mo   = e.target.value; render(); };
+      document.getElementById("fManager").onchange  = e => { filters.mgr  = e.target.value; render(); };
+      document.getElementById("fProject").onchange  = e => { filters.prj  = e.target.value; render(); };
+      document.getElementById("fPlatform").onchange = e => { filters.plat = e.target.value; render(); };
+      document.getElementById("tableSearch").oninput = () => renderTableOnly();
+
+      document.getElementById("btnReset").onclick = () => {
+        filters = { q: "All", mo: "All", mgr: "All", prj: "All", plat: "All" };
+        syncFilterUI();
+        render();
+      };
+
+      const sb = document.getElementById("sidebar");
+      const bd = document.getElementById("sidebarBackdrop");
+      const openDrawer  = () => { sb.classList.add("open"); bd.classList.add("open"); };
+      const closeDrawer = () => { sb.classList.remove("open"); bd.classList.remove("open"); };
+      document.getElementById("btnMobileMenu").onclick = openDrawer;
+      document.getElementById("btnCloseSidebar").onclick = closeDrawer;
+      bd.onclick = closeDrawer;
+
+      document.querySelectorAll("#navList .nav-item").forEach(li => {
+        li.onclick = () => {
+          document.querySelectorAll("#navList .nav-item").forEach(x => x.classList.remove("active"));
+          li.classList.add("active");
+          currentPage = li.dataset.page;
+          document.getElementById("tableSearch").value = "";
+          sortState = (currentPage === "home") ? { key: "name", dir: "asc" } : { key: "leads", dir: "desc" };
+          closeDrawer();
+          render();
+        };
+      });
+
+      document.getElementById("btnTheme").onclick = () => {
+        const html = document.documentElement;
+        const dark = html.getAttribute("data-theme") === "dark";
+        html.setAttribute("data-theme", dark ? "light" : "dark");
+        document.getElementById("btnTheme").textContent = dark ? "🌙 Dark Mode" : "☀️ Light Mode";
+        render();
+      };
+
+      document.getElementById("btnLang").onclick = () => {
+        const order = ["pbi", "en", "ar"];
+        langMode = order[(order.indexOf(langMode) + 1) % order.length];
+        applyLanguageUI();
+        populateSelect("fMonth", RAW.dicts.mo, langMode === "ar" ? "كل الشهور" : "All Months", formatMonthLabel);
+        syncFilterUI();
+        render();
+      };
+
+      document.getElementById("btnExport").onclick = exportCurrentCSV;
+
+      applyLanguageUI();
+      document.getElementById("loader").classList.add("hidden");
+      render();
+    }
+
+    function syncFilterUI() {
+      document.getElementById("fQuarter").value  = filters.q;
+      document.getElementById("fMonth").value    = filters.mo;
+      document.getElementById("fManager").value  = filters.mgr;
+      document.getElementById("fProject").value  = filters.prj;
+      document.getElementById("fPlatform").value = filters.plat;
+    }
+
+    function setFilterCross(key, val) {
+      if (!val) return;
+      filters[key] = (filters[key] === val) ? "All" : val;
+      syncFilterUI();
+      render();
+    }
+
+    function computeAggregates() {
+      const D = RAW.dicts;
+
+      let total = 0, active = 0, inactive = 0, contracts = 0;
+      const byMo = new Map(), byQ = new Map(), bySt = new Map(), byMgr = new Map(), bySales = new Map(),
+            byPrj = new Map(), byPlat = new Map(), bySub = new Map(), byCamp = new Map();
+
+      function addBucket(map, name, cnt, grp) {
+        if (!name) return;
+        let b = map.get(name);
+        if (!b) { b = { key: name, name, leads: 0, active: 0, inactive: 0, contracts: 0 }; map.set(name, b); }
+        b.leads += cnt;
+        if (grp === "active")   b.active += cnt;
+        if (grp === "inactive") b.inactive += cnt;
+        if (grp === "contract") b.contracts += cnt;
+      }
+
+      const rows = RAW.rows;
+      for (let i = 0; i < rows.length; i++) {
+        const r = rows[i];
+        if (filters.q    !== "All" && D.q[r[1]]    !== filters.q)    continue;
+        if (filters.mo   !== "All" && D.mo[r[0]]   !== filters.mo)   continue;
+        if (filters.mgr  !== "All" && D.mgr[r[2]]  !== filters.mgr)  continue;
+        if (filters.prj  !== "All" && D.prj[r[4]]  !== filters.prj)  continue;
+        if (filters.plat !== "All" && D.plat[r[5]] !== filters.plat) continue;
+
+        const cnt = r[9];
+        const grp = RAW.stGroup[r[8]];
+        total += cnt;
+        if (grp === "active")   active += cnt;
+        if (grp === "inactive") inactive += cnt;
+        if (grp === "contract") contracts += cnt;
+
+        addBucket(byMo,    D.mo[r[0]],    cnt, grp);
+        addBucket(byQ,     D.q[r[1]],     cnt, grp);
+        addBucket(bySt,    D.st[r[8]],    cnt, grp);
+        addBucket(byMgr,   D.mgr[r[2]],   cnt, grp);
+        addBucket(bySales, D.sales[r[3]], cnt, grp);
+        addBucket(byPrj,   D.prj[r[4]],   cnt, grp);
+        addBucket(byPlat,  D.plat[r[5]],  cnt, grp);
+        addBucket(bySub,   D.sub[r[6]],   cnt, grp);
+        addBucket(byCamp,  D.camp[r[7]],  cnt, grp);
+      }
+
+      const topBy = (map, field) => {
+        let best = null;
+        for (const v of map.values()) {
+          if (!best || v[field] > best[field]) best = v;
+        }
+        return best && best[field] > 0 ? best : { name: "No Contracts", contracts: 0, leads: 0 };
+      };
+
+      const sortedMo = [...byMo.values()]
+        .sort((a, b) => a.key.localeCompare(b.key))
+        .map(x => ({ ...x, name: formatMonthLabel(x.key) }));
+
+      const sortedQ = [...byQ.values()]
+        .sort((a, b) => a.key.localeCompare(b.key))
+        .map(x => ({ ...x, name: formatQuarterLabel(x.key) }));
+
+      return {
+        total, active, inactive, contracts,
+        byMo:    sortedMo,
+        byQ:     sortedQ,
+        bySt:    [...bySt.values()].sort((a, b) => b.leads - a.leads),
+        byMgr:   [...byMgr.values()],
+        bySales: [...bySales.values()],
+        byPrj:   [...byPrj.values()],
+        byPlat:  [...byPlat.values()],
+        bySub:   [...bySub.values()],
+        byCamp:  [...byCamp.values()],
+        topSales: topBy(bySales, "contracts"),
+        topMgr:   topBy(byMgr,   "contracts"),
+        topPlat:  topBy(byPlat,  "contracts"),
+        topPrj:   topBy(byPrj,   "contracts"),
+        topCamp:  topBy(byCamp,  "contracts")
+      };
+    }
+
+    function renderActivePills() {
+      const container = document.getElementById("activePills");
+      const labels = { q: "Quarter", mo: "Month", mgr: "Manager", prj: "Project", plat: "Platform" };
+      const pills = [];
+      for (const [k, v] of Object.entries(filters)) {
+        if (v !== "All") {
+          const disp = k === "mo" ? formatMonthLabel(v) : v;
+          pills.push(`<span class="pill">${labels[k]}: ${disp} <button onclick="clearFilter('${k}')">×</button></span>`);
+        }
+      }
+      container.innerHTML = pills.join("");
+    }
+    window.clearFilter = k => { filters[k] = "All"; syncFilterUI(); render(); };
+
+    function render() {
+      const T = I18N[langMode];
+      const agg = computeAggregates();
+      document.getElementById("pageTitle").textContent = T.pages[currentPage].title;
+      document.getElementById("pageSub").textContent   = T.pages[currentPage].sub;
+      document.getElementById("sidebarTotal").textContent = fmtNum(agg.total);
+      renderActivePills();
+
+      // 1. KPI Cards (Total Leads visible on ALL 5 tabs with high-contrast Light/Dark color!)
+      const lblTot = langMode === "ar" ? "إجمالي العملاء" : (langMode === "pbi" ? "Total Leads  |  إجمالي العملاء" : "Total Leads");
+      const totalCard = { label: lblTot, icon: "📊", accent: "var(--kpi-total)", soft: "var(--kpi-total-soft)", val: fmtNum(agg.total), foot: "All filtered CRM records", badge: "100%" };
+      const kpiGridEl = document.getElementById("kpiGrid");
+      let kpis;
+      if (currentPage === "home" || currentPage === "manager") {
+        kpiGridEl.classList.remove("cols-5");
+        kpis = [
+          totalCard,
+          { label: T.kpi.contracts, icon: "📑", accent: "#2563eb", soft: "rgba(37,99,235,0.12)", val: fmtNum(agg.contracts), foot: "Close Deal + Deal Referral", badge: "Conv " + fmtPct(agg.contracts, agg.total) },
+          { label: T.kpi.active,    icon: "🟢", accent: "#059669", soft: "rgba(5,150,105,0.12)", val: fmtNum(agg.active),    foot: "Start Action / On Going / Interested", badge: fmtPct(agg.active, agg.total) },
+          { label: T.kpi.inactive,  icon: "🔴", accent: "#dc2626", soft: "rgba(220,38,38,0.12)", val: fmtNum(agg.inactive),  foot: "Lost / Close Archive / Cancelation", badge: fmtPct(agg.inactive, agg.total) }
+        ];
+      } else {
+        kpiGridEl.classList.add("cols-5");
+        let k5 = { label: T.kpi.conv, icon: "📈", accent: "#d97706", soft: "rgba(217,119,6,0.12)", val: fmtPct(agg.contracts, agg.total), foot: "Contracts / Total Leads", badge: `${fmtNum(agg.contracts)} Deals`, isText: false };
+        if (currentPage === "platform") k5 = { label: T.kpi.topPlat,  icon: "🏆", accent: "#d97706", soft: "rgba(217,119,6,0.12)", val: agg.topPlat.name,  foot: "Leading channel", badge: `${fmtNum(agg.topPlat.contracts)}`, isText: true };
+        if (currentPage === "campaigns")k5 = { label: T.kpi.topCamp,  icon: "🏆", accent: "#d97706", soft: "rgba(217,119,6,0.12)", val: agg.topCamp.name,  foot: "Best campaign",   badge: `${fmtNum(agg.topCamp.contracts)}`, isText: true };
+        if (currentPage === "projects") k5 = { label: T.kpi.topPrj,   icon: "🏆", accent: "#d97706", soft: "rgba(217,119,6,0.12)", val: agg.topPrj.name,   foot: "Top project",     badge: `${fmtNum(agg.topPrj.contracts)}`, isText: true };
+        kpis = [
+          totalCard,
+          { label: T.kpi.contracts, icon: "📑", accent: "#2563eb", soft: "rgba(37,99,235,0.12)", val: fmtNum(agg.contracts), foot: "Close Deal + Deal Referral", badge: "Conv " + fmtPct(agg.contracts, agg.total) },
+          { label: T.kpi.active,    icon: "🟢", accent: "#059669", soft: "rgba(5,150,105,0.12)", val: fmtNum(agg.active),    foot: "Start Action / On Going / Interested", badge: fmtPct(agg.active, agg.total) },
+          { label: T.kpi.inactive,  icon: "🔴", accent: "#dc2626", soft: "rgba(220,38,38,0.12)", val: fmtNum(agg.inactive),  foot: "Lost / Close Archive / Cancelation", badge: fmtPct(agg.inactive, agg.total) },
+          k5
+        ];
+      }
+      kpiGridEl.innerHTML = kpis.map(k => `
+        <div class="kpi-card" style="--kpi-accent:${k.accent};--kpi-soft:${k.soft};">
+          <div class="kpi-top">
+            <span class="kpi-label">${k.label}</span>
+            <span class="kpi-icon">${k.icon}</span>
+          </div>
+          <div class="kpi-value ${k.isText ? 'text-sm' : ''}">${k.val}</div>
+          <div class="kpi-foot">
+            <span>${k.foot}</span>
+            <span class="kpi-badge">${k.badge}</span>
+          </div>
+        </div>
+      `).join("");
+
+      // 2. Spotlight Cards (Home: 5 Top Performers | Manager: Top Manager + Top Sales Rep)
+      const spotEl = document.getElementById("spotlightGrid");
+      const chartsEl = document.getElementById("chartsGrid");
+      const tblToggleEl = document.getElementById("tableTimeToggle");
+      const isAr = (langMode === "ar");
+      if (currentPage === "home") {
+        spotEl.classList.remove("cols-2");
+        spotEl.style.display = "grid";
+        spotEl.innerHTML = [
+          { lbl: isAr ? "👤 أعلى سيلز"      : "👤 Top Sales",       name: agg.topSales.name, cnt: agg.topSales.contracts, c: "#6366f1" },
+          { lbl: isAr ? "👔 أعلى تيم ليدر"  : "👔 Top Team Leader", name: agg.topMgr.name,   cnt: agg.topMgr.contracts,   c: "#2563eb" },
+          { lbl: isAr ? "🏢 أعلى مشروع"     : "🏢 Top Project",     name: agg.topPrj.name,   cnt: agg.topPrj.contracts,   c: "#059669" },
+          { lbl: isAr ? "📱 أعلى منصة"      : "📱 Top Platform",    name: agg.topPlat.name,  cnt: agg.topPlat.contracts,  c: "#0ea5e9" },
+          { lbl: isAr ? "📢 أعلى حملة"      : "📢 Top Campaign",    name: agg.topCamp.name,  cnt: agg.topCamp.contracts,  c: "#d97706" }
+        ].map(s => `
+          <div class="spot-card" style="--spot-accent:${s.c};">
+            <div style="min-width:0;">
+              <div class="spot-lbl">${s.lbl}</div>
+              <div class="spot-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
+            </div>
+            <div class="spot-cnt">${fmtNum(s.cnt)}</div>
+          </div>
+        `).join("");
+
+        destroyCharts();
+        chartsEl.style.display = "none";
+        chartsEl.innerHTML = "";
+        const isQ = (timeGranularity === "quarter");
+        const lblM = isAr ? "شهور" : "Months";
+        const lblQ = isAr ? "ربع سنوي" : "Quarters";
+        tblToggleEl.innerHTML = `
+          <div class="seg-toggle">
+            <button class="seg-btn ${!isQ ? 'active' : ''}" onclick="setTimeGranularity('month')">${lblM}</button>
+            <button class="seg-btn ${isQ ? 'active' : ''}" onclick="setTimeGranularity('quarter')">${lblQ}</button>
+          </div>
+        `;
+      } else if (currentPage === "manager") {
+        spotEl.classList.add("cols-2");
+        spotEl.style.display = "grid";
+        spotEl.innerHTML = [
+          { lbl: isAr ? "👔 أعلى مدير / تيم ليدر (تعاقدات)" : "👔 Top Manager / Team Leader (Contracts)", name: agg.topMgr.name,   cnt: agg.topMgr.contracts,   c: "#2563eb" },
+          { lbl: isAr ? "🏆 أعلى مندوب مبيعات (تعاقدات)"    : "🏆 Top Sales Rep (Contracts)",             name: agg.topSales.name, cnt: agg.topSales.contracts, c: "#d97706" }
+        ].map(s => `
+          <div class="spot-card" style="--spot-accent:${s.c};">
+            <div style="min-width:0;">
+              <div class="spot-lbl">${s.lbl}</div>
+              <div class="spot-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${s.name}">${s.name}</div>
+            </div>
+            <div class="spot-cnt">${fmtNum(s.cnt)}</div>
+          </div>
+        `).join("");
+        chartsEl.style.display = "grid";
+        tblToggleEl.innerHTML = "";
+        renderModuleCharts(agg);
+      } else {
+        spotEl.classList.remove("cols-2");
+        spotEl.style.display = "none";
+        chartsEl.style.display = "grid";
+        tblToggleEl.innerHTML = "";
+        renderModuleCharts(agg);
+      }
+
+      // 4. Build Leaderboard Table per module
+      if (currentPage === "home")      currentTableRows = (timeGranularity === "quarter" ? agg.byQ : agg.byMo);
+      if (currentPage === "platform")  currentTableRows = agg.byPlat;
+      if (currentPage === "manager")   currentTableRows = agg.byMgr;
+      if (currentPage === "campaigns") currentTableRows = agg.byCamp;
+      if (currentPage === "projects")  currentTableRows = agg.byPrj;
+      if (currentPage === "home" && timeGranularity === "quarter") {
+        document.getElementById("tableTitle").textContent = langMode === "ar" ? "📅 ملخص الأداء حسب الربع السنوي (2026)" : "📅 Quarterly Performance Summary (2026)";
+      } else {
+        document.getElementById("tableTitle").textContent = T.tables[currentPage];
+      }
+
+      renderTableOnly();
+    }
+
+    function destroyCharts() {
+      Object.values(charts).forEach(c => c.destroy());
+      charts = {};
+    }
+
+    function renderModuleCharts(agg) {
+      destroyCharts();
+      if (typeof Chart === "undefined") return;
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const txtColor  = isDark ? "#e2e8f0" : "#0f172a";
+      const mutedTxt  = isDark ? "#94a3b8" : "#475569";
+      const gridColor = isDark ? "rgba(148,163,184,0.12)" : "rgba(15,23,42,0.06)";
+
+      const topN = (arr, key, n) => [...arr].filter(x => x[key] > 0).sort((a, b) => b[key] - a[key]).slice(0, n);
+
+      const C = I18N[langMode].charts;
+      const isQ = (timeGranularity === "quarter");
+      const timeSeries = isQ ? agg.byQ : agg.byMo;
+      const timeClickKey = isQ ? "q" : "mo";
+      const timeKeys = timeSeries.map(x => x.key);
+      const timeLabels = timeSeries.map(x => x.name);
+      const leadsTrendTitle = isQ
+        ? (langMode === "ar" ? "📈 إجمالي العملاء حسب الربع السنوي" : "📈 Quarterly Total Leads Trend")
+        : C.moLeads;
+      const dealsTrendTitle = isQ
+        ? (langMode === "ar" ? "📑 إجمالي التعاقدات حسب الربع السنوي" : "📑 Quarterly Closed Deals Trend")
+        : C.moDeals;
+
+      let specs = [];
+      if (currentPage === "home") {
+        specs = [
+          { id: "c1", title: leadsTrendTitle, isTime: true, type: "line", color: "#2563eb", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.leads), onClickKey: timeClickKey },
+          { id: "c2", title: dealsTrendTitle, isTime: true, type: "line", color: "#059669", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.contracts), onClickKey: timeClickKey },
+          { id: "c3", title: C.status,  hint: "All lead statuses", type: "barH", color: "#1d4ed8", labels: agg.bySt.map(x => x.name), data: agg.bySt.map(x => x.leads) },
+          { id: "c4", title: C.topPrjC, hint: "Click project to filter", type: "barH", color: "#d97706", labels: topN(agg.byPrj,"contracts",8).map(x => x.name), data: topN(agg.byPrj,"contracts",8).map(x => x.contracts), onClickKey: "prj" }
+        ];
+      } else if (currentPage === "platform") {
+        const pC = topN(agg.byPlat, "contracts", 8);
+        const sL = topN(agg.bySub, "leads", 8);
+        const pL = topN(agg.byPlat, "leads", 6);
+        specs = [
+          { id: "c1", title: C.platC,   hint: "Click platform to filter", type: "barH", color: "#2563eb", labels: pC.map(x => x.name), data: pC.map(x => x.contracts), onClickKey: "plat" },
+          { id: "c2", title: C.subPlat, hint: "Platform Child breakdown", type: "barH", color: "#0ea5e9", labels: sL.map(x => x.name), data: sL.map(x => x.leads) },
+          { id: "c3", title: C.platSh,  hint: "Click slice to filter", type: "doughnut", labels: pL.map(x => x.name), data: pL.map(x => x.leads), onClickKey: "plat" },
+          { id: "c4", title: leadsTrendTitle, isTime: true, type: "line", color: "#059669", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.leads), onClickKey: timeClickKey }
+        ];
+      } else if (currentPage === "manager") {
+        const mC = topN(agg.byMgr, "contracts", 10);
+        const sC = topN(agg.bySales, "contracts", 10);
+        const mL = topN(agg.byMgr, "leads", 10);
+        specs = [
+          { id: "c1", title: C.mgrC,    hint: "Click manager to filter", type: "barH", color: "#2563eb", labels: mC.map(x => x.name), data: mC.map(x => x.contracts), onClickKey: "mgr" },
+          { id: "c2", title: C.salesC,  hint: "Top individual closers", type: "barH", color: "#059669", labels: sC.map(x => x.name), data: sC.map(x => x.contracts) },
+          { id: "c3", title: C.mgrL,    hint: "Click manager to filter", type: "barH", color: "#6366f1", labels: mL.map(x => x.name), data: mL.map(x => x.leads), onClickKey: "mgr" },
+          { id: "c4", title: dealsTrendTitle, isTime: true, type: "line", color: "#d97706", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.contracts), onClickKey: timeClickKey }
+        ];
+      } else if (currentPage === "campaigns") {
+        const cL = topN(agg.byCamp, "leads", 10);
+        const cC = topN(agg.byCamp, "contracts", 10);
+        specs = [
+          { id: "c1", title: C.campL,   hint: "Highest volume ads", type: "barH", color: "#2563eb", labels: cL.map(x => x.name), data: cL.map(x => x.leads) },
+          { id: "c2", title: C.campC,   hint: "Highest converting ads", type: "barH", color: "#059669", labels: cC.map(x => x.name), data: cC.map(x => x.contracts) },
+          { id: "c3", title: C.status,  hint: "Filtered campaign leads", type: "barH", color: "#1d4ed8", labels: agg.bySt.map(x => x.name), data: agg.bySt.map(x => x.leads) },
+          { id: "c4", title: leadsTrendTitle, isTime: true, type: "line", color: "#d97706", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.leads), onClickKey: timeClickKey }
+        ];
+      } else if (currentPage === "projects") {
+        const pL = topN(agg.byPrj, "leads", 10);
+        const pC = topN(agg.byPrj, "contracts", 10);
+        const pD = topN(agg.byPrj, "leads", 7);
+        specs = [
+          { id: "c1", title: C.prjL,    hint: "Click project to filter", type: "barH", color: "#2563eb", labels: pL.map(x => x.name), data: pL.map(x => x.leads), onClickKey: "prj" },
+          { id: "c2", title: C.prjC,    hint: "Click project to filter", type: "barH", color: "#059669", labels: pC.map(x => x.name), data: pC.map(x => x.contracts), onClickKey: "prj" },
+          { id: "c3", title: C.prjSh,   hint: "Click slice to filter", type: "doughnut", labels: pD.map(x => x.name), data: pD.map(x => x.leads), onClickKey: "prj" },
+          { id: "c4", title: dealsTrendTitle, isTime: true, type: "line", color: "#d97706", labels: timeLabels, keys: timeKeys, data: timeSeries.map(x => x.contracts), onClickKey: timeClickKey }
+        ];
+      }
+
+      const lblM = langMode === "ar" ? "شهور" : "Months";
+      const lblQ = langMode === "ar" ? "ربع سنوي" : "Quarters";
+
+      document.getElementById("chartsGrid").innerHTML = specs.map(s => `
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">${s.title}</div>
+            <div class="chart-right">
+              ${s.isTime ? `
+                <div class="seg-toggle">
+                  <button class="seg-btn ${!isQ ? 'active' : ''}" onclick="setTimeGranularity('month')">${lblM}</button>
+                  <button class="seg-btn ${isQ ? 'active' : ''}" onclick="setTimeGranularity('quarter')">${lblQ}</button>
+                </div>
+              ` : `<div class="chart-hint">${s.hint || ""}</div>`}
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="${s.id}"></canvas></div>
+        </div>
+      `).join("");
+
+      const palette = ["#2563eb","#0ea5e9","#6366f1","#10b981","#f59e0b","#ef4444","#8b5cf6","#14b8a6"];
+
+      specs.forEach(s => {
+        const ctx = document.getElementById(s.id).getContext("2d");
+        let cfg;
+        if (s.type === "line") {
+          const grad = ctx.createLinearGradient(0, 0, 0, 300);
+          grad.addColorStop(0, s.color + "40");
+          grad.addColorStop(1, s.color + "02");
+          cfg = {
+            type: "line",
+            data: {
+              labels: s.labels,
+              datasets: [{
+                data: s.data,
+                borderColor: s.color,
+                backgroundColor: grad,
+                fill: true,
+                tension: 0.35,
+                borderWidth: 3.5,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: s.color
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              layout: { padding: { top: 28, right: 16 } },
+              plugins: {
+                legend: { display: false },
+                datalabels: {
+                  align: "top", anchor: "end", offset: 4,
+                  color: txtColor,
+                  font: { weight: "800", size: 12 },
+                  formatter: v => fmtNum(v)
+                }
+              },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: mutedTxt, font: { weight: "600", size: 11 } } },
+                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: mutedTxt, font: { size: 11 } } }
+              }
+            }
+          };
+        } else if (s.type === "barH") {
+          cfg = {
+            type: "bar",
+            data: {
+              labels: s.labels,
+              datasets: [{
+                data: s.data,
+                backgroundColor: s.color,
+                borderRadius: 7,
+                barPercentage: 0.72
+              }]
+            },
+            options: {
+              indexAxis: "y",
+              responsive: true, maintainAspectRatio: false,
+              layout: { padding: { right: 54 } },
+              plugins: {
+                legend: { display: false },
+                datalabels: {
+                  anchor: "end", align: "right", offset: 6,
+                  color: txtColor,
+                  font: { weight: "800", size: 12 },
+                  formatter: v => fmtNum(v)
+                }
+              },
+              scales: {
+                x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: mutedTxt, font: { size: 11 } } },
+                y: { grid: { display: false }, ticks: { color: txtColor, font: { weight: "700", size: 11.5 } } }
+              }
+            }
+          };
+        } else {
+          const sum = s.data.reduce((a, b) => a + b, 0) || 1;
+          cfg = {
+            type: "doughnut",
+            data: {
+              labels: s.labels,
+              datasets: [{ data: s.data, backgroundColor: palette, borderWidth: 2, borderColor: isDark ? "#111a2e" : "#ffffff" }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              cutout: "58%",
+              plugins: {
+                legend: { position: "right", labels: { color: txtColor, font: { weight: "700", size: 12 }, padding: 14, boxWidth: 13 } },
+                datalabels: {
+                  color: "#ffffff",
+                  font: { weight: "800", size: 11.5 },
+                  formatter: v => ((v / sum) * 100 >= 4 ? ((v / sum) * 100).toFixed(1) + "%" : "")
+                }
+              }
+            }
+          };
+        }
+
+        if (s.onClickKey) {
+          cfg.options.onClick = (evt, elems) => {
+            if (elems && elems.length) {
+              const idx = elems[0].index;
+              const val = s.keys ? s.keys[idx] : s.labels[idx];
+              setFilterCross(s.onClickKey, val);
+            }
+          };
+          cfg.options.onHover = (evt, elems) => {
+            evt.native.target.style.cursor = elems.length ? "pointer" : "default";
+          };
+        }
+        charts[s.id] = new Chart(ctx, cfg);
+      });
+    }
+
+    function renderTableOnly() {
+      const q = (document.getElementById("tableSearch").value || "").toLowerCase().trim();
+      let list = currentTableRows.filter(r => !q || r.name.toLowerCase().includes(q));
+      list = list.map(r => ({ ...r, conv: r.leads ? r.contracts / r.leads : 0 }));
+
+      list.sort((a, b) => {
+        const k = sortState.key;
+        const mul = sortState.dir === "asc" ? 1 : -1;
+        if (k === "name") return (a.key || a.name).localeCompare(b.key || b.name) * mul;
+        return (a[k] - b[k]) * mul;
+      });
+
+      const CL = I18N[langMode].cols;
+      const firstColLbl = currentPage === "home"
+        ? (timeGranularity === "quarter" ? (langMode === "ar" ? "الربع السنوي" : "Quarter") : CL[1])
+        : CL[0];
+      const cols = [
+        { k: "name",      lbl: firstColLbl, num: false },
+        { k: "leads",     lbl: CL[2], num: true },
+        { k: "active",    lbl: CL[3], num: true },
+        { k: "inactive",  lbl: CL[4], num: true },
+        { k: "contracts", lbl: CL[5], num: true },
+        { k: "conv",      lbl: CL[6], num: true },
+        { k: "_bar",      lbl: CL[7], num: false }
+      ];
+
+      document.getElementById("tableHead").innerHTML = "<tr>" + cols.map(c => {
+        const arrow = sortState.key === c.k ? (sortState.dir === "asc" ? " ▲" : " ▼") : "";
+        return `<th class="${c.num ? 'num' : ''}" onclick="sortTable('${c.k}')">${c.lbl}${arrow}</th>`;
+      }).join("") + "</tr>";
+
+      const maxLeads = Math.max(1, ...list.map(r => r.leads));
+      document.getElementById("tableBody").innerHTML = list.slice(0, 60).map(r => {
+        const pct = (r.conv * 100);
+        const cls = pct >= 1 ? "conv-high" : pct >= 0.4 ? "conv-mid" : "conv-low";
+        const barW = Math.round((r.leads / maxLeads) * 100);
+        return `<tr>
+          <td>${r.name}</td>
+          <td class="num leads-col">${fmtNum(r.leads)}</td>
+          <td class="num active-col">${fmtNum(r.active)}</td>
+          <td class="num inact-col">${fmtNum(r.inactive)}</td>
+          <td class="num contr-col">${fmtNum(r.contracts)}</td>
+          <td class="num"><span class="conv-pill ${cls}">${pct.toFixed(2)}%</span></td>
+          <td><div class="bar-track"><div class="bar-fill" style="width:${barW}%"></div></div></td>
+        </tr>`;
+      }).join("");
+
+      const totL = list.reduce((s, r) => s + r.leads, 0);
+      const totA = list.reduce((s, r) => s + r.active, 0);
+      const totI = list.reduce((s, r) => s + r.inactive, 0);
+      const totC = list.reduce((s, r) => s + r.contracts, 0);
+      document.getElementById("tableFoot").innerHTML = `<tr>
+        <td>${CL[8]} (${list.length})</td>
+        <td class="num">${fmtNum(totL)}</td>
+        <td class="num">${fmtNum(totA)}</td>
+        <td class="num">${fmtNum(totI)}</td>
+        <td class="num">${fmtNum(totC)}</td>
+        <td class="num">${fmtPct(totC, totL)}</td>
+        <td></td>
+      </tr>`;
+    }
+
+    window.sortTable = k => {
+      if (k === "_bar") return;
+      if (sortState.key === k) sortState.dir = sortState.dir === "desc" ? "asc" : "desc";
+      else sortState = { key: k, dir: k === "name" ? "asc" : "desc" };
+      renderTableOnly();
+    };
+
+    function exportCurrentCSV() {
+      const hdr = ["Name","Total Leads","Active","Inactive","Contracts","Conversion %"];
+      const lines = [hdr.join(",")];
+      currentTableRows.forEach(r => {
+        lines.push([`"${r.name.replace(/"/g,'""')}"`, r.leads, r.active, r.inactive, r.contracts, fmtPct(r.contracts, r.leads)].join(","));
+      });
+      const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `LaSirena_${currentPage}_2026.csv`;
+      a.click();
+    }
+
+    // Live Google Sheets JSON Sync (works seamlessly on Firebase Hosting + instant fallback to data.js)
+    const LIVE_STORAGE_KEY = "lasirena_live_api_url";
+    function getLiveApiUrl() {
+      const p = new URLSearchParams(window.location.search).get("api");
+      if (p) { localStorage.setItem(LIVE_STORAGE_KEY, p); return p; }
+      return window.LIVE_API_URL || localStorage.getItem(LIVE_STORAGE_KEY) || "";
+    }
+
+    async function fetchLiveFromSheet(silent) {
+      const url = getLiveApiUrl();
+      if (!url) {
+        if (!silent) {
+          const entered = prompt("Paste your Google Apps Script Web App URL (ending with /exec) to enable live auto-sync from Google Sheets:", "");
+          if (entered && entered.trim().startsWith("http")) {
+            localStorage.setItem(LIVE_STORAGE_KEY, entered.trim());
+            return fetchLiveFromSheet(false);
+          }
+        }
+        return;
+      }
+      const btn = document.getElementById("btnSync");
+      btn.textContent = "⏳ Syncing...";
+      try {
+        const sep = url.includes("?") ? "&" : "?";
+        const res = await fetch(url + sep + "mode=json", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const fresh = await res.json();
+        if (fresh && fresh.dicts && fresh.rows) {
+          initApp(fresh);
+          btn.textContent = "✅ Live Synced";
+          setTimeout(() => { btn.textContent = "🔄 Live Sync"; }, 2500);
+        }
+      } catch (err) {
+        btn.textContent = "🔄 Live Sync";
+        if (!silent) alert("Could not sync live data (" + err.message + "). Make sure Code.gs is updated with ?mode=json and deployed as Anyone.");
+      }
+    }
+
+    // Boot: Instant localStorage cache (<0.1s!) + background live refresh from Google Sheets!
+    const CUBE_CACHE_KEY = "lasirena_crm_cube_v1";
+    function saveCubeCache(d) {
+      try { localStorage.setItem(CUBE_CACHE_KEY, JSON.stringify(d)); } catch (e) {}
+    }
+    function loadCubeCache() {
+      try {
+        const s = localStorage.getItem(CUBE_CACHE_KEY);
+        if (!s) return null;
+        const d = JSON.parse(s);
+        return (d && d.dicts && d.rows) ? d : null;
+      } catch (e) { return null; }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const syncBtn = document.getElementById("btnSync");
+      if (syncBtn) syncBtn.onclick = () => fetchLiveFromSheet(false);
+
+      // 1) Safely parse Apps Script SSR JSON if present (never throws SyntaxError even if Code.gs wasn't updated!)
+      if (!window.CRM_DATA) {
+        try {
+          const ssrEl = document.getElementById("ssrData");
+          if (ssrEl) {
+            const rawTxt = ssrEl.textContent.trim();
+            if (rawTxt.startsWith("{")) window.CRM_DATA = JSON.parse(rawTxt);
+          }
+        } catch (e) {}
+      }
+
+      if (window.CRM_DATA && window.CRM_DATA.dicts && window.CRM_DATA.rows) {
+        initApp(window.CRM_DATA);
+        saveCubeCache(window.CRM_DATA);
+      }
+
+      if (typeof google !== "undefined" && google.script && google.script.run) {
+        const onErr = err => {
+          if (!RAW) {
+            document.getElementById("loader").innerHTML = "<div style='color:#f87171;font-weight:700;max-width:480px;text-align:center;'>Error loading from Google Sheet Data tab:<br><br>" + (err && err.message ? err.message : String(err)) + "</div>";
+          }
+          if (syncBtn) syncBtn.textContent = "🔄 Live Sync";
+        };
+        const onFresh = d => {
+          saveCubeCache(d);
+          initApp(d);
+          if (syncBtn) {
+            syncBtn.textContent = "✅ Live Synced";
+            setTimeout(() => syncBtn.textContent = "🔄 Live Sync", 2000);
+          }
+        };
+
+        if (syncBtn) syncBtn.onclick = () => {
+          syncBtn.textContent = "⏳ Syncing...";
+          google.script.run
+            .withSuccessHandler(onFresh)
+            .withFailureHandler(onErr)
+            .getCrmCube(true);
+        };
+
+        // Only fetch via google.script.run if SSR data wasn't already injected!
+        if (!RAW) {
+          const cached = loadCubeCache();
+          if (cached) initApp(cached);
+          google.script.run
+            .withSuccessHandler(onFresh)
+            .withFailureHandler(onErr)
+            .getCrmCube(false);
+        }
+      } else if (RAW) {
+        if (getLiveApiUrl()) fetchLiveFromSheet(true);
+      } else if (getLiveApiUrl()) {
+        fetchLiveFromSheet(false);
+      } else {
+        document.getElementById("loader").innerHTML = "<div style='color:#f87171;font-weight:700;'>Could not load CRM data. Make sure data.js is in the same folder or deploy on Google Apps Script.</div>";
+      }
+    });
+  </script>
+</body>
+</html>
