@@ -1523,7 +1523,8 @@
       a.click();
     }
 
-    // Live Google Sheets JSON Sync (works seamlessly on Firebase Hosting + instant fallback to data.js)
+    // Live Google Sheets JSON Sync (pre-wired to LA SIRENA GROUP Google Sheet Data tab!)
+    window.LIVE_API_URL = "https://script.google.com/macros/s/AKfycbxp1BO9yTTEPQNTdKM18FQAoEBHvbXmbGYYLw7SDNCZrQldNaqVmCTXcqUNPxgP6nv1xA/exec";
     const LIVE_STORAGE_KEY = "lasirena_live_api_url";
     function getLiveApiUrl() {
       const p = new URLSearchParams(window.location.search).get("api");
@@ -1531,33 +1532,37 @@
       return window.LIVE_API_URL || localStorage.getItem(LIVE_STORAGE_KEY) || "";
     }
 
-    async function fetchLiveFromSheet(silent) {
+    async function fetchLiveFromSheet(silent, forceRefresh) {
       const url = getLiveApiUrl();
       if (!url) {
         if (!silent) {
           const entered = prompt("Paste your Google Apps Script Web App URL (ending with /exec) to enable live auto-sync from Google Sheets:", "");
           if (entered && entered.trim().startsWith("http")) {
             localStorage.setItem(LIVE_STORAGE_KEY, entered.trim());
-            return fetchLiveFromSheet(false);
+            return fetchLiveFromSheet(false, true);
           }
         }
         return;
       }
       const btn = document.getElementById("btnSync");
-      btn.textContent = "⏳ Syncing...";
+      if (btn) btn.textContent = silent ? "⏳ Updating..." : "⏳ Syncing...";
       try {
         const sep = url.includes("?") ? "&" : "?";
-        const res = await fetch(url + sep + "mode=json", { cache: "no-store" });
+        const qs = forceRefresh ? "mode=json&refresh=1" : "mode=json";
+        const res = await fetch(url + sep + qs, { cache: "no-store" });
         if (!res.ok) throw new Error("HTTP " + res.status);
         const fresh = await res.json();
         if (fresh && fresh.dicts && fresh.rows) {
+          saveCubeCache(fresh);
           initApp(fresh);
-          btn.textContent = "✅ Live Synced";
-          setTimeout(() => { btn.textContent = "🔄 Live Sync"; }, 2500);
+          if (btn) {
+            btn.textContent = "✅ Live Synced";
+            setTimeout(() => { btn.textContent = "🔄 Live Sync"; }, 2500);
+          }
         }
       } catch (err) {
-        btn.textContent = "🔄 Live Sync";
-        if (!silent) alert("Could not sync live data (" + err.message + "). Make sure Code.gs is updated with ?mode=json and deployed as Anyone.");
+        if (btn) btn.textContent = "🔄 Live Sync";
+        if (!silent) alert("Could not sync live data (" + err.message + "). Please try again.");
       }
     }
 
@@ -1577,22 +1582,25 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       const syncBtn = document.getElementById("btnSync");
-      if (syncBtn) syncBtn.onclick = () => fetchLiveFromSheet(false);
+      if (syncBtn) syncBtn.onclick = () => fetchLiveFromSheet(false, true);
 
-      // 1) Safely parse Apps Script SSR JSON if present (never throws SyntaxError even if Code.gs wasn't updated!)
-      if (!window.CRM_DATA) {
-        try {
-          const ssrEl = document.getElementById("ssrData");
-          if (ssrEl) {
-            const rawTxt = ssrEl.textContent.trim();
-            if (rawTxt.startsWith("{")) window.CRM_DATA = JSON.parse(rawTxt);
-          }
-        } catch (e) {}
-      }
-
-      if (window.CRM_DATA && window.CRM_DATA.dicts && window.CRM_DATA.rows) {
-        initApp(window.CRM_DATA);
-        saveCubeCache(window.CRM_DATA);
+      // Prefer latest cached live sync from localStorage on Vercel, fallback to embedded data.js (0ms open!)
+      const cachedLive = loadCubeCache();
+      if (cachedLive) {
+        initApp(cachedLive);
+      } else {
+        if (!window.CRM_DATA) {
+          try {
+            const ssrEl = document.getElementById("ssrData");
+            if (ssrEl) {
+              const rawTxt = ssrEl.textContent.trim();
+              if (rawTxt.startsWith("{")) window.CRM_DATA = JSON.parse(rawTxt);
+            }
+          } catch (e) {}
+        }
+        if (window.CRM_DATA && window.CRM_DATA.dicts && window.CRM_DATA.rows) {
+          initApp(window.CRM_DATA);
+        }
       }
 
       if (typeof google !== "undefined" && google.script && google.script.run) {
